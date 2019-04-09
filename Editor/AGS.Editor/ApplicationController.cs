@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
@@ -35,6 +35,7 @@ namespace AGS.Editor
             _events.SavingGame += new EditorEvents.SavingGameHandler(_events_SavingGame);
             _events.SavingUserData += new EditorEvents.SavingUserDataHandler(_events_SavingUserData);
             _events.LoadedUserData += new EditorEvents.LoadedUserDataHandler(_events_LoadedUserData);
+            _events.ColorThemeLoaded += new EditorEvents.ColorThemeLoadedHandler(_events_ColorThemeLoaded);
             _agsEditor.PreSaveGame += new AGSEditor.PreSaveGameHandler(_agsEditor_PreSaveGame);
 
             _guiController.OnEditorShutdown += new GUIController.EditorShutdownHandler(GUIController_OnEditorShutdown);
@@ -42,6 +43,31 @@ namespace AGS.Editor
             _agsEditor.DoEditorInitialization();
             AGSColor.ColorMapper = new ColorMapper(_agsEditor);
             CreateComponents();
+        }
+
+        private void _events_ColorThemeLoaded(string fileName)
+        {
+            if (fileName == "Default")
+            {
+                MessageBox.Show("Please restart AGS due to default theme.");
+                Factory.GUIController.ColorThemes.Current = ColorThemeStub.DEFAULT;
+            }
+            else
+            {
+                foreach (var inner in _guiController.ColorThemes.Themes)
+                {
+                    if (fileName == inner.Name)
+                    {
+                        foreach (var x in Factory.GUIController.ColorThemes.ColorActionList)
+                        {
+                            inner.Init();
+                            x(inner);
+                        }
+
+                        Factory.GUIController.ColorThemes.Current = inner;
+                    }
+                }
+            }
         }
 
         private void _events_LoadedUserData(XmlNode rootNode)

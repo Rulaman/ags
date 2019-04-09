@@ -1,4 +1,4 @@
-using AGS.Types;
+﻿using AGS.Types;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -28,6 +28,8 @@ namespace AGS.Editor
         public event ShowSpriteManagerHandler ShowSpriteManager;
         public delegate void FileChangedInGameFolderHandler(string fileName);
         public event FileChangedInGameFolderHandler FileChangedInGameFolder;
+        public delegate void ColorThemeLoadedHandler(string fileName);
+        public event ColorThemeLoadedHandler ColorThemeLoaded;
 
         public void OnGameSettingsChanged()
         {
@@ -116,6 +118,14 @@ namespace AGS.Editor
             if (FileChangedInGameFolder != null)
             {
                 FileChangedInGameFolder(fileName);
+            }
+        }
+
+        public void OnColorThemeLoaded(string fileName)
+        {
+            if (ColorThemeLoaded != null)
+            {
+                ColorThemeLoaded(fileName);
             }
         }
 

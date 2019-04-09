@@ -74,8 +74,15 @@ namespace AGS.Editor
             }
         }
 
+        public List<Action<ColorTheme>> ColorActionList = new List<Action<ColorTheme>>();
+
         public void Apply(Action<ColorTheme> apply)
         {
+            if (!ColorActionList.Contains(apply))
+            {
+                ColorActionList.Add(apply);
+            }
+
             if (!IsCurrentDefault)
             {
                 try
